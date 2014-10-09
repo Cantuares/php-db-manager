@@ -52,7 +52,7 @@ If you want update some record in the database, see this example:
 
 ```php
 $db->set(array('username' => 'sicrano'))->where('username',
-'fulano')->update();`
+'fulano')->update();
 ```
 
 for delete some record in the database, you can use:

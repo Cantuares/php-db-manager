@@ -183,7 +183,7 @@ class DB_Manager extends PDO {
 	 * @return object Instância da classe.
 	 */
 	public function database() {
-		extract(require_once('database.php'));
+		extract(require_once('./config/database.php'));
 		$pdo_errconf = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
 		parent::__construct($driver.':dbname='.$database.';host='.$host, $user, $password, $pdo_errconf);
 		return $this;
