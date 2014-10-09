@@ -65,22 +65,22 @@ Many others functions can be explored in the class, see documentation for more d
 
 Queries with `where` method:
 ```php
-$db->select(*)->where('username', 'fulano')->getAll();
+$db->select('*')->where('username', 'fulano')->getAll();
 ```
 
 Queries with `where_between` method:
 ```php
-$db->select(*)->where_between('year', 2013, 2014)->getAll();
+$db->select('*')->where_between('year', 2013, 2014)->getAll();
 ```
 
 Queries with `where_in` method:
 ```php
-$db->select(*)->where_in('numbers', array(10,11,15,19,25))->getAll();
+$db->select('*')->where_in('numbers', array(10,11,15,19,25))->getAll();
 ```
 
 Queries with `order_by` method:
 ```php
-$db->select(*)->where('username', 'fulano')->order_by('age', 'DESC')->getAll();
+$db->select('*')->where('username', 'fulano')->order_by('age', 'DESC')->getAll();
 ```
 
 Queries with `group_by` method:
@@ -106,5 +106,7 @@ $db->->get_result_count();
 ```
 
 You can increase the limit of records will be returned and change the primary key field name.
+```php
 $db->limit = 2000;
 $db->primaryKey = 'name_your_primary_key_field'; // default is id.
+```

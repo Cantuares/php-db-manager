@@ -480,17 +480,9 @@ class DB_Manager extends PDO {
 	/**
 	 * Retorna apenas uma consulta.
 	 * 
-	 * @param  int   $limit  Limite de dados retornados
-	 * @param  int   $offset Deslocamento das consultas.
-	 * @return array         Retorno dos dados solicitados.
+	 * @return array   Retorno dos dados solicitados.
 	 */
-	public function get($limit = null, $offset = null) {
-		if ( !is_null($limit) )
-			$this->_limit  = $limit;
-
-		if ( !is_null($offset) )
-			$this->_offset = $offset;
-
+	public function get() {
 		return $this->_execute($this->query_builder(), $this->_data, 'assoc');
 	}
 
