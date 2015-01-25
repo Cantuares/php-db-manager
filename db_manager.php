@@ -502,7 +502,7 @@ class DB_Manager extends PDO {
 		$result = array();
 		$sth    = $this->prepare($query);
 
-		if ( $sth->execute($values) )
+		if ( $sth->execute(array_values(array_filter($values, 'strlen'))) )
 		{
 			if ( $this->_insert || $this->_update || $this->_delete )
 			{
