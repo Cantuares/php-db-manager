@@ -263,7 +263,7 @@ class DB_Manager extends PDO {
 			return false;
 
 		foreach ( $columns as $key => $value ) {
-			array_push($this->_insert, $key);
+			array_push($this->_insert, "`{$key}`");
 			array_push($this->_data, $value);
 			array_push($this->_insert_binds, '?');
 		}
@@ -354,9 +354,10 @@ class DB_Manager extends PDO {
 	 * 
 	 * @param  string     $column Colunas
 	 * @param  string|int $value  Valor da condicional
+	 * @param  string     $logical_operator operador lógico.
 	 * @return object     		  Instância da classe
 	 */
-	public function where($column = null, $value = null) {
+	public function where($column = null, $value = null, $logical_operator = 'AND') {
 		if ( is_null($column) && is_null($value) )
 			return false;
 
@@ -377,7 +378,7 @@ class DB_Manager extends PDO {
 		array_push($this->_data, $value);
 
 		if ( !is_null($this->_where) )
-			$this->_where .= " AND {$column} {$content}";
+			$this->_where .= " {$logical_operator} {$column} {$content}";
 
 		if ( is_null($this->_where) )
 			$this->_where = "WHERE {$column} {$content}";
@@ -390,16 +391,17 @@ class DB_Manager extends PDO {
 	 * 
 	 * @param  string     $column  Coluna
 	 * @param  string|int $values  Valor da condicional
+	 * @param  string     $logical_operator operador lógico.
 	 * @return object     		   Instância da classe
 	 */
-	public function where_in($column = null, $values = null) {
+	public function where_in($column = null, $values = null, $logical_operator = 'AND') {
 		if ( is_null($column) && is_null($values) )
 			return false;
 
 		array_push($this->_data, $values);
 
 		if ( !is_null($this->_where) )
-			$this->_where .= " AND {$column} IN (?)";
+			$this->_where .= " {$logical_operator} {$column} IN (?)";
 
 		if ( is_null($this->_where) )
 			$this->_where = "WHERE {$column} IN (?)";
