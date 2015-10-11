@@ -487,6 +487,15 @@ class DB_Manager extends PDO {
 	public function get() {
 		return $this->_execute($this->query_builder(), $this->_data, 'assoc');
 	}
+	
+	/**
+	 * Os resultados são retornados como objetos.
+	 * 
+	 * @return Retorno dos dados solicitados. 
+	 */
+	public function get_obj() {
+		return $this->_execute($this->query_builder(), $this->_data, 'obj');
+	}
 
 	/**
 	 * Faz a execução de uma query passada
@@ -512,10 +521,13 @@ class DB_Manager extends PDO {
 				return TRUE;
 			}
 
-			if ( $fetch == 'All' )
+			if ( $fetch == 'All' ) {
 				$result = $sth->fetchAll();
-			else
+			} else if ( $fetch == 'assoc' ) {
 				$result = $sth->fetch(PDO::FETCH_ASSOC);
+			} else if ( $fetch == 'obj' ) {
+				$result = $sth->fetchAll(PDO::FETCH_OBJ);
+			}
 		}
 
 		if ( $result )
