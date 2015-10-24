@@ -5,7 +5,7 @@
  * Esta classe tem como objetivo gerir consultas e também outras operações
  * à base de dados MySQL, pode-se usar outros drivers, basta setar os dados
  * no ficheiro de configuração.
- * 
+ *
  * @package engine
  * @subpackage classes
  * @author  Vagner V. B. Cantuares <vagner.cantuares@gmail.com>
@@ -13,54 +13,54 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public Licence (GPL)
  * @link https://www.facebook.com/vagner.cantuares
  */
- 
+
 class DB_Manager extends PDO {
 
 	/**
 	 * Chave primária.
-	 * 
+	 *
 	 * @var string
 	 */
 	public $primaryKey = 'id';
 
 	/**
 	 * Tabela da base de dados.
-	 * 
+	 *
 	 * @var void
 	 */
 	public $table;
-	
+
 	/**
 	 * Query.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_query;
-	
+
 	/**
 	 * SELECT.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_select;
 
 	/**
 	 * Alias - usado para renomear uma tabela.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_alias;
 
 	/**
 	 * Relação entre tabelas.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_join;
 
 	/**
 	 * UPDATE.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_update;
@@ -68,21 +68,21 @@ class DB_Manager extends PDO {
 	/**
 	 * Colunas que receberam valores para
 	 * posteriomente serem atualizados/inseridas.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_data_set;
 
 	/**
 	 * DELETE.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_delete;
 
 	/**
 	 * INSERT.
-	 * 
+	 *
 	 * @var array
 	 */
 	private $_insert = array();
@@ -90,70 +90,82 @@ class DB_Manager extends PDO {
 	/**
 	 * Códigos de vinculação dos
 	 * dados inseridos.
-	 * 
+	 *
 	 * @var array
 	 */
 	private $_insert_binds = array();
 
 	/**
 	 * Condições.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_where;
-	
+
 	/**
 	 * Dados armazenados.
-	 * 
+	 *
 	 * @var array
 	 */
 	private $_data = array();
-	
+
 	/**
 	 * Grupo de resultados.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_group_by;
 
 	/**
 	 * Ordem dos resultados.
-	 * 
+	 *
 	 * @var void
 	 */
 	private $_order_by;
-	
+
 	/**
 	 * Ponto de partida dos dados.
-	 * 
+	 *
 	 * @var integer
 	 */
 	private $_offset = 0;
-	
+
 	/**
 	 * Limite dos dados.
-	 * 
+	 *
 	 * @var integer
 	 */
-	private $_limit = 100;
+	private $_limit = 1000;
 
 	/**
 	 * Resultado da query.
-	 * 
+	 *
 	 * @var array
 	 */
 	private $_result = array();
 
 	/**
 	 * Total de resultados retornados.
-	 * 
+	 *
 	 * @var integer
 	 */
 	private $_count = 0;
 
+  /**
+   * Define se há mais que um resultado.
+   * @var boolean
+   */
+	private $all = false;
+
+  /**
+   * Define se há apenas um resultado.
+   * @var boolean
+   */
+	private $row = false;
+
 	/**
 	 * Instância.
-	 * 
+	 *
 	 * @var void
 	 */
 	public static $instance;
@@ -167,7 +179,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Singleton da classe.
-	 * 
+	 *
 	 * @return object Objeto da clase atual.
 	 */
 	public static function get_instance() {
@@ -176,14 +188,14 @@ class DB_Manager extends PDO {
 			self::$instance = new $class();
 		return self::$instance;
 	}
-	
+
 	/**
 	 * Instância da base de dados
-	 * 
+	 *
 	 * @return object Instância da classe.
 	 */
 	public function database() {
-		extract(require_once('./config/database.php'));
+		extract(include('./config/database.php'));
 		$pdo_errconf = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
 		parent::__construct($driver.':dbname='.$database.';host='.$host, $user, $password, $pdo_errconf);
 		return $this;
@@ -191,7 +203,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Contrução de colunas para consultas.
-	 * 
+	 *
 	 * @param  string|array $columns Nome das colunas, pode ser string ou array.
 	 * @return object                Instância da classe.
 	 */
@@ -218,7 +230,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Atualiza os daddos na base de dados.
-	 * 
+	 *
 	 * @param  string|array $columns Valores a serem atualizados.
 	 * @return object 				 Instância da classe.
 	 */
@@ -240,8 +252,6 @@ class DB_Manager extends PDO {
 			array_push($this->_data, $value);
 		}
 
-		var_dump($this->_data);
-
 		$this->_update = TRUE;
 
 		$update_values  = implode(',', $update_values);
@@ -253,7 +263,7 @@ class DB_Manager extends PDO {
 	/**
 	 * Valores que serão definidos para inserção
 	 * na base de dados.
-	 * 
+	 *
 	 * @param  array $columns  Colunas com seus respetivos valores.
 	 * @return object          Instância da classe.
 	 */
@@ -276,7 +286,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Cria um novo registro na base de dados.
-	 * 
+	 *
 	 * @return object Ordem de execução.
 	 */
 	public function insert() {
@@ -292,7 +302,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Atualiza um registro na base de dados.
-	 * 
+	 *
 	 * @return object Ordem de execução.
 	 */
 	public function update() {
@@ -307,7 +317,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Remove um registro na base de dados.
-	 * 
+	 *
 	 * @param  string|array $set_select Valores a serem atualizados.
 	 * @return object Ordem de execução.
 	 */
@@ -351,7 +361,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Condições da Query SQL.
-	 * 
+	 *
 	 * @param  string     $column Colunas
 	 * @param  string|int $value  Valor da condicional
 	 * @param  string     $logical_operator operador lógico.
@@ -388,7 +398,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Condição where para lista.
-	 * 
+	 *
 	 * @param  string     $column  Coluna
 	 * @param  string|int $values  Valor da condicional
 	 * @param  string     $logical_operator operador lógico.
@@ -411,7 +421,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Separa por grupos.
-	 * 
+	 *
 	 * @param  string $columns Colunas
 	 * @return object          Instância da classe
 	 */
@@ -425,7 +435,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Condição where entre intervalos.
-	 * 
+	 *
 	 * @param  string $column Coluna.
 	 * @param  string $left   Valor esquerdo.
 	 * @param  string $right  Valor direito.
@@ -449,7 +459,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Retorna um tipo de ordem, DES ou ASC.
-	 * 
+	 *
 	 * @param  string $columns Colunas
 	 * @param  string $sort    Tipo de ordem
 	 * @return object          Instância da classe
@@ -464,49 +474,61 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Retorna todos os valores de uma consulta.
-	 * 
+	 * Agora os resultados são retornados como objetos.
+	 *
 	 * @param  int   $limit  Limite de dados retornados
 	 * @param  int   $offset Deslocamento das consultas.
 	 * @return array         Retorno dos dados solicitados.
 	 */
-	public function getAll($limit = null, $offset = null) {
+	public function all($limit = null, $offset = null) {
 		if ( !is_null($limit) )
 			$this->_limit  = $limit;
 
 		if ( !is_null($offset) )
 			$this->_offset = $offset;
 
+		$this->all = TRUE;
 		return $this->_execute($this->query_builder(), $this->_data);
 	}
 
 	/**
+	 * Retorna todos os valores de uma consulta
+	 *
+	 * @param  int   $limit  Limite de dados retornados
+	 * @param  int   $offset Deslocamento das consultas.
+	 * @return array         Retorno dos dados solicitados.
+	 */
+	public function all_array($limit = null, $offset = null) {
+		if ( !is_null($limit) )
+			$this->_limit  = $limit;
+
+		if ( !is_null($offset) )
+			$this->_offset = $offset;
+
+		$this->all = TRUE;
+		return $this->_execute($this->query_builder(), $this->_data, 'array');
+	}
+
+	/**
 	 * Retorna apenas uma consulta.
-	 * 
+	 *
 	 * @return array   Retorno dos dados solicitados.
 	 */
-	public function get() {
-		return $this->_execute($this->query_builder(), $this->_data, 'assoc');
-	}
-	
-	/**
-	 * Os resultados são retornados como objetos.
-	 * 
-	 * @return Retorno dos dados solicitados. 
-	 */
-	public function get_obj() {
-		return $this->_execute($this->query_builder(), $this->_data, 'obj');
+	public function row() {
+		$this->row = TRUE;
+		return $this->_execute($this->query_builder(), $this->_data);
 	}
 
 	/**
 	 * Faz a execução de uma query passada
 	 * como parâmetro de entrada.
-	 * 
+	 *
 	 * @param  string $query  Query SQL.
 	 * @param  array  $values Valores da query.
-	 * @param  string $fetch  Tipo de retorno de dados.
+	 * @param  string $type  Tipo de retorno de dados.
 	 * @return mixed          Resultado da consulta.
 	 */
-	private function _execute($query = null, $values = array(), $fetch = 'All') {
+	private function _execute($query = null, $values = array(), $type = 'obj') {
 		if ( is_null($query) )
 			return false;
 
@@ -521,12 +543,20 @@ class DB_Manager extends PDO {
 				return TRUE;
 			}
 
-			if ( $fetch == 'All' ) {
-				$result = $sth->fetchAll();
-			} else if ( $fetch == 'assoc' ) {
-				$result = $sth->fetch(PDO::FETCH_ASSOC);
-			} else if ( $fetch == 'obj' ) {
-				$result = $sth->fetchAll(PDO::FETCH_OBJ);
+			switch ($type) {
+				case 'array':
+					if ($this->all)
+						$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+					if ($this->row)
+						$result = $sth->fetch(PDO::FETCH_ASSOC);
+					break;
+
+				default:
+					if ($this->all)
+						$result = $sth->fetchAll(PDO::FETCH_OBJ);
+					if ($this->row)
+						$result = $sth->fetch(PDO::FETCH_OBJ);;
+					break;
 			}
 		}
 
@@ -534,13 +564,13 @@ class DB_Manager extends PDO {
 			array_map(array($this, 'map_count'), $result);
 
 		$this->clear();
-		
+
 		return $result;
 	}
 
 	/**
 	 * Método CALL - Especialmente para stored precedure.
-	 * 
+	 *
 	 * @param  string $name Nome da rotina.
 	 * @return void
 	 */
@@ -551,7 +581,7 @@ class DB_Manager extends PDO {
 	/**
 	 * Callback que conta os resultados
 	 * retornados da consulta.
-	 * 
+	 *
 	 * @param  array $rows Resultado da consulta.
 	 * @return int         Número de resultados.
 	 */
@@ -561,7 +591,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Retorna a quantidade resultados de uma consulta.
-	 * 
+	 *
 	 * @return int Total dee resultados retornados.
 	 */
 	public function get_result_count() {
@@ -570,7 +600,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Depuração
-	 * 
+	 *
 	 * @param  mixed $vars Conteúdo a ser depurado.
 	 * @return void
 	 */
@@ -587,7 +617,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Depuração SQL.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function check_query() {
@@ -596,7 +626,7 @@ class DB_Manager extends PDO {
 
 	/**
 	 * Contrução de uma estrutura SQL.
-	 * 
+	 *
 	 * @return string
 	 */
 	private function query_builder() {
@@ -656,7 +686,7 @@ class DB_Manager extends PDO {
 	/**
 	 * Limpa as variáveis para que futuras novas queries
 	 * sejam usadas.
-	 * 
+	 *
 	 * @return void
 	 */
 	private function clear() {
