@@ -25,21 +25,21 @@ $db->table = 'users u';
 ```
 
 ```php
-$db->select('u.username, u.password')->getAll();
+$db->select('u.username, u.password')->all();
 ```
 
-You can also to pass array parameters in the methods `select` and `getAll`, for example:
+You can also to pass array parameters in the methods `select` and `all`, for example:
 
 ```php
-$db->select(array('u.login', 'u.password'))->getAll(2000) // will be returned 2000.;
+$db->select(array('u.login', 'u.password'))->all(2000) // will be returned 2000.;
 ```
 
-Use the `get()` method instead `getAll()` if you want return only one result,
+Use the `row()` method instead `all()` if you want return only one result,
 for example:
 
 ```php
 $db->select('u.username, u.password')->where('username',
-'fulano')->where('password', '***')->get();
+'fulano')->where('password', '***')->row();
 ```
 
 If you want insert record in the database, see this example:
@@ -65,38 +65,38 @@ Many others functions can be explored in the class, see documentation for more d
 
 Queries with `where` method:
 ```php
-$db->select('*')->where('username', 'fulano')->getAll();
+$db->select('*')->where('username', 'fulano')->all();
 ```
 
 Queries with `where_between` method:
 ```php
-$db->select('*')->where_between('year', 2013, 2014)->getAll();
+$db->select('*')->where_between('year', 2013, 2014)->all();
 ```
 
 Queries with `where_in` method:
 ```php
-$db->select('*')->where_in('numbers', array(10,11,15,19,25))->getAll();
+$db->select('*')->where_in('numbers', array(10,11,15,19,25))->all();
 ```
 
 Queries with `order_by` method:
 ```php
-$db->select('*')->where('username', 'fulano')->order_by('age', 'DESC')->getAll();
+$db->select('*')->where('username', 'fulano')->order_by('age', 'DESC')->all();
 ```
 
 Queries with `group_by` method:
 ```php
-$db->select('count(*) as count, age')->group_by('age')->getAll();
+$db->select('count(*) as count, age')->group_by('age')->all();
 ```
 
 Queries with `group_by` method:
 ```php
-$db->select('count(*) as count, age')->group_by('age')->getAll();
+$db->select('count(*) as count, age')->group_by('age')->all();
 ```
 
 Queries with `join` method:
 ```php
 $db->table = 'users u';
-$db->select('u.name, g.name')->join('genders g', 'u.gender_id = g.id', 'LEFT')->getAll();
+$db->select('u.name, g.name')->join('genders g', 'u.gender_id = g.id', 'LEFT')->all();
 ```
 
 Method `get_result_count` return the number total records:
