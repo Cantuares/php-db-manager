@@ -151,16 +151,16 @@ class DB_Manager extends PDO {
 	 */
 	private $_count = 0;
 
-  /**
-   * Define se há mais que um resultado.
-   * @var boolean
-   */
+    /**
+     * Define se há mais que um resultado.
+     * @var boolean
+     */
 	private $all = false;
 
-  /**
-   * Define se há apenas um resultado.
-   * @var boolean
-   */
+   /**
+    * Define se há apenas um resultado.
+    * @var boolean
+    */
 	private $row = false;
 
 	/**
