@@ -81,6 +81,13 @@ class DB_Manager extends PDO {
 	private $_delete;
 
 	/**
+	 * DELETE ALL.
+	 *
+	 * @var void
+	 */
+	private $_delete_all;
+
+	/**
 	 * INSERT.
 	 *
 	 * @var array
@@ -334,6 +341,19 @@ class DB_Manager extends PDO {
 	}
 
 	/**
+	 * Remove todos os registros na base de dados.
+	 *
+	 * @return object Ordem de execução.
+	 */
+	public function delete_all() {
+		if ( is_null($this->table) )
+			return false;
+		$this->_delete_all = TRUE;
+
+		return $this->_execute($this->query_builder(), $this->_data);
+	}
+
+	/**
 	 * Cria uma relação entre uma ou mais tabelas.
 	 *
 	 * @param  string $table   Tabela que irá ser relacionada.
@@ -537,7 +557,7 @@ class DB_Manager extends PDO {
 
 		if ( $sth->execute(array_values(array_filter($values, 'strlen'))) )
 		{
-			if ( $this->_insert || $this->_update || $this->_delete )
+			if ( $this->_insert || $this->_update || $this->_delete || $this->_delete_all )
 			{
 				$this->clear();
 				return TRUE;
@@ -560,8 +580,8 @@ class DB_Manager extends PDO {
 			}
 		}
 
-		if ( $result )
-			array_map(array($this, 'map_count'), $result);
+		#if ( $result )
+		#	array_map(array($this, 'map_count'), $result);
 
 		$this->clear();
 
@@ -679,6 +699,11 @@ class DB_Manager extends PDO {
 
 		}
 
+		if ( $this->_delete_all )
+		{
+			$sql = "DELETE FROM {$this->table}          " ;
+		}
+
 		if ( $sql )
 			return preg_replace("!\s+!", " ", trim($sql));
 	}
@@ -691,8 +716,8 @@ class DB_Manager extends PDO {
 	 */
 	private function clear() {
 		$clear_null = array(
-			'_query',    '_select', '_alias', '_join',     '_update',
-			'_data_set', '_delete', '_where', '_group_by', '_order_by');
+			'_query',    '_select', '_alias', '_join', '_update', '_delete_all',
+			'_data_set', '_delete', '_where', '_group_by', '_order_by', 'all', 'row');
 
 		$clear_array = array(
 			'_data', '_insert', '_result', '_insert_binds');
