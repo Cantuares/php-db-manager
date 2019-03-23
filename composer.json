@@ -1,0 +1,11 @@
+{
+    "name": "cantuares/php-db-manager",
+    "description": "Small and simple class for MySQL database management.",
+    "authors": [
+        {
+            "name": "Vagner Cantuares",
+            "email": "vagner.cantuares@gmail.com"
+        }
+    ],
+    "require": {}
+}
